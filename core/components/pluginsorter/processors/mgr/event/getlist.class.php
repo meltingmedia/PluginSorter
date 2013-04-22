@@ -10,7 +10,7 @@ class ListEvents extends modObjectGetListProcessor
 
     public function prepareQueryBeforeCount(xPDOQuery $c)
     {
-        $c->leftJoin('modPluginEvent', 'PluginEvents');
+        $c->rightJoin('modPluginEvent', 'PluginEvents');
         $c->select(array(
             $this->modx->getSelectColumns($this->classKey, $this->classKey),
             'total' => 'COUNT(PluginEvents.pluginid)'
@@ -37,7 +37,7 @@ class ListEvents extends modObjectGetListProcessor
     {
         $list[] = array(
             'name' => $this->modx->lexicon('pluginsorter.all_events'),
-            'total' => 0,
+            'total' => '-',
         );
 
         return $list;
