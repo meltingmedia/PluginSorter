@@ -4,7 +4,7 @@ class ListPlugins extends modObjectGetListProcessor
 {
     public $classKey = 'modPluginEvent';
     public $languageTopics = array('pluginsorter:default');
-    public $defaultSortField = 'priority';
+    public $defaultSortField = 'modPluginEvent.priority';
     public $defaultSortDirection = 'ASC';
     public $objectType = 'modpluginevent';
 
@@ -15,13 +15,13 @@ class ListPlugins extends modObjectGetListProcessor
             $this->modx->getSelectColumns($this->classKey, $this->classKey),
             $this->modx->getSelectColumns('modPlugin', 'Plugin', 'plugin_', array('name', 'disabled')),
         ));
-//        $query = $this->getProperty('query');
-//        if (!empty($query)) {
-//            $c->where(array(
-//                'name:LIKE' => '%'.$query.'%',
-//                'OR:description:LIKE' => '%'.$query.'%',
-//            ));
-//        }
+
+        $event = $this->getProperty('event');
+        if (!empty($event)) {
+            $c->where(array(
+                'event' => $event,
+            ));
+        }
 
         return $c;
     }
@@ -44,14 +44,15 @@ class ListPlugins extends modObjectGetListProcessor
         if (empty($sortKey)) $sortKey = $this->getProperty('sort');
 
         $c->sortby('event', 'ASC');
-        $c->sortby($sortKey,$this->getProperty('dir'));
+        $c->sortby('priority', 'ASC');
+        //$c->sortby($sortKey,$this->getProperty('dir'));
 
         if ($limit > 0) {
             $c->limit($limit,$start);
         }
 
-        $c->prepare();
-        $this->modx->log(modX::LOG_LEVEL_INFO, $c->toSQL());
+//        $c->prepare();
+//        $this->modx->log(modX::LOG_LEVEL_INFO, $c->toSQL());
 
         $data['results'] = $this->modx->getCollection($this->classKey,$c);
         return $data;

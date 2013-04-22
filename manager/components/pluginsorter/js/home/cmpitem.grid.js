@@ -47,6 +47,19 @@ PluginSorter.grid.CmpItem = function(config) {
             ,fixed: true
             ,width: 80
         }]
+
+        ,tbar: [{
+            xtype: 'pluginsorter-combo-events'
+            ,listeners: {
+                select: {
+                    fn: function(elem, rec, idx) {
+                        this.baseParams.event = rec.data.name;
+                        this.getStore().reload();
+                    }
+                    ,scope: this
+                }
+            }
+        }]
     });
 
     if (config.grouping) {
@@ -81,3 +94,30 @@ Ext.extend(PluginSorter.grid.CmpItem, MODx.grid.Grid, {
 });
 Ext.reg('pluginsorter-grid-cmpitem', PluginSorter.grid.CmpItem);
 
+PluginSorter.EventsCombo = function(config) {
+    config = config || {};
+
+    Ext.applyIf(config, {
+        name : 'event'
+        ,hiddenName : 'event'
+        ,pageSize: 20
+        ,forceSelection: true
+        ,selectOnFocus: true
+        ,displayField : 'name'
+        ,valueField : 'name'
+        ,fields: ['name']
+        ,triggerAction : 'all'
+        ,lazyRender: true
+        ,editable : true
+        ,minChars: 1
+        ,url: PluginSorter.config.connector_url
+        ,listWidth: 300
+        ,baseParams: {
+            action: 'mgr/event/getlist'
+            ,combo: true
+        }
+    });
+    PluginSorter.EventsCombo.superclass.constructor.call(this, config);
+};
+Ext.extend(PluginSorter.EventsCombo, MODx.combo.ComboBox);
+Ext.reg('pluginsorter-combo-events', PluginSorter.EventsCombo);
