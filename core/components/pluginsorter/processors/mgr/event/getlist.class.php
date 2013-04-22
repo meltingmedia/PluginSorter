@@ -37,7 +37,7 @@ class ListEvents extends modObjectGetListProcessor
     {
         $list[] = array(
             'name' => $this->modx->lexicon('pluginsorter.all_events'),
-            'total' => '-',
+            'total' => $this->modx->getCount('modPluginEvent'),
         );
 
         return $list;
