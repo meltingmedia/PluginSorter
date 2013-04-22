@@ -72,6 +72,30 @@ class PluginSorter
         if ($this->config['add_package']) $this->modx->addPackage('pluginsorter', $this->config['model_path']);
     }
 
+    public function autoSort($event)
+    {
+        $c = $this->modx->newQuery('modPluginEvent');
+        $c->rightJoin('modPlugin', 'Plugin');
+        $c->where(array(
+            'event' => $event,
+        ));
+        $c->sortby('Plugin.disabled', 'ASC');
+        $c->sortby('priority', 'ASC');
+        $c->sortby('Plugin.name', 'ASC');
+
+        $collection = $this->modx->getCollection('modPluginEvent', $c);
+        /** @var modPluginEvent $object */
+        $idx = 0;
+        foreach ($collection as $object) {
+            $object->set('priority', $idx);
+            $object->save();
+//            /** @var modPlugin $plugin */
+//            $plugin = $object->getOne('Plugin');
+//            $this->modx->log(modX::LOG_LEVEL_INFO, $plugin->get('name'));
+            $idx += 1;
+        }
+    }
+
     private function initDebug()
     {
         error_reporting(E_ALL);

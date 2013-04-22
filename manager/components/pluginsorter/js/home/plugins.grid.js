@@ -29,30 +29,42 @@ PluginSorter.grid.CmpItem = function(config) {
         ,grouping: true
         ,groupBy: 'event'
 
+
+        ,sm: new Ext.grid.RowSelectionModel({
+            singleSelect: true
+            ,listeners: {
+                beforerowselect: function(sm, idx, keep, record) {
+                    sm.grid.ddText = '<div>'+ _('pluginsorter.sort', {name: record.data.plugin_name }) +'</div>';
+                }
+            }
+        })
+
         ,columns: [{
-            header: 'Priority'
+            header: _('pluginsorter.plugin_priority')
             ,dataIndex: 'priority'
             ,sortable: false
             ,fixed: true
             ,width: 80
         },{
-            header: 'Plugin'
+            header: _('plugin')
             ,dataIndex: 'plugin_name'
             ,sortable: false
         },{
-            header: 'Event'
+            header: _('event')
             ,dataIndex: 'event'
             ,sortable: false
         },{
-            header: 'Disabled'
+            header: _('disabled')
             ,dataIndex: 'plugin_disabled'
             ,sortable: false
             ,fixed: true
             ,width: 80
+            ,renderer: this.rendYesNo
         }]
 
         ,tbar: [{
             xtype: 'pluginsorter-combo-events'
+            ,id: 'event-filter'
             ,listeners: {
                 select: {
                     fn: function(elem, rec, idx) {
@@ -62,8 +74,33 @@ PluginSorter.grid.CmpItem = function(config) {
                     ,scope: this
                 }
             }
+        }, {
+            text: _('pluginsorter.automatic_sort')
+            ,id: 'event-sorter'
+            ,listeners: {
+                click: {
+                    fn: function() {
+                        var event = Ext.getCmp('event-filter').getValue();
+                        MODx.Ajax.request({
+                            url: this.config.url
+                            ,params: {
+                                action: 'plugin/autosort'
+                                ,event: event
+                            }
+                            ,listeners: {
+                                success: {
+                                    fn: function(r) {
+                                        this.refresh();
+                                    }
+                                    ,scope: this
+                                }
+                            }
+                        });
+                    }
+                    ,scope: this
+                }
+            }
         }]
-
 
         ,listeners: {
             render: {
@@ -134,9 +171,6 @@ PluginSorter.grid.CmpItem = function(config) {
 Ext.extend(PluginSorter.grid.CmpItem, MODx.grid.Grid, {
 
     onSort: function(o) {
-        console.log(o);
-
-
         MODx.Ajax.request({
             url: this.config.url
             ,params: {
@@ -154,6 +188,77 @@ Ext.extend(PluginSorter.grid.CmpItem, MODx.grid.Grid, {
                 }
             }
         });
+    }
+
+    ,getMenu: function() {
+        var m = [];
+        m.push({
+            text: _('pluginsorter.toggle_status')
+            ,handler: this.toggleStatus
+        });
+        m.push('-');
+        m.push({
+            text: _('pluginsorter.remove_event')
+            ,handler: this.removeFromEvent
+        });
+        this.addContextMenuItem(m);
+    }
+
+    ,toggleStatus: function() {
+        var rec = this.menu.record;
+        MODx.Ajax.request({
+            url: this.config.url
+            ,params: {
+                action: 'plugin/toggleStatus'
+                ,pluginid: rec.pluginid
+            }
+            ,listeners: {
+                success: {
+                    fn: function(r) {
+                        this.refresh();
+                    }
+                    ,scope: this
+                }
+            }
+        });
+    }
+
+    ,removeFromEvent: function() {
+        var rec = this.menu.record;
+        MODx.Ajax.request({
+            url: this.config.url
+            ,params: {
+                action: 'plugin/removeEvent'
+                ,pluginid: rec.pluginid
+                ,event: rec.event
+            }
+            ,listeners: {
+                success: {
+                    fn: function(r) {
+                        this.refresh();
+                    }
+                    ,scope: this
+                }
+            }
+        });
+    }
+
+    ,rendYesNo: function(v,md) {
+        if (v === 1 || v == '1') { v = true; }
+        if (v === 0 || v == '0') { v = false; }
+        switch (v) {
+            case true:
+            case 'true':
+            case 1:
+                md.css = 'red';
+                return _('yes');
+            case false:
+            case 'false':
+            case '':
+            case 0:
+                md.css = 'green';
+                return _('no');
+        }
     }
 });
 Ext.reg('pluginsorter-grid-plugins', PluginSorter.grid.CmpItem);

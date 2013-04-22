@@ -10,31 +10,6 @@ class SortPlugins extends modProcessor
 
     public function process()
     {
-//        $this->modx->log(modX::LOG_LEVEL_INFO, print_r($this->getProperties(), true));
-
-//        $c = $this->modx->newQuery($this->classKey);
-//        $c->rightJoin('modPlugin', 'Plugin');
-//        $c->where(array(
-//            'event' => $this->getProperty('event'),
-//        ));
-//        $c->sortby('priority', 'ASC');
-//        $c->sortby('Plugin.name', 'ASC');
-//
-//        $this->modx->log(modX::LOG_LEVEL_INFO, 'total '. $this->modx->getCount($this->classKey, $c));
-//        $collection = $this->modx->getCollection($this->classKey, $c);
-//        /** @var modPluginEvent $object */
-//        $idx = 0;
-//        foreach ($collection as $object) {
-//            $object->set('priority', $idx);
-//            $object->save();
-//            /** @var modPlugin $plugin */
-//            $plugin = $object->getOne('Plugin');
-//            $this->modx->log(modX::LOG_LEVEL_INFO, $plugin->get('name'));
-//            $idx += 1;
-//        }
-//
-//        return $this->success();
-
         if (!$this->getObject()) {
             return $this->failure($this->modx->lexicon('linkwall.link_err_nf'));
         }
@@ -56,6 +31,8 @@ class SortPlugins extends modProcessor
         // Update the source rank to the targeted one
         $this->object->set($this->rankField, $this->getProperty($this->rankField));
         $this->object->save();
+
+        $this->modx->cacheManager->refresh();
 
         return $this->success('', $this->object);
     }
