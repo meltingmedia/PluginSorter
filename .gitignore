@@ -1,0 +1,6 @@
+_build/build.config.php
+core/components/pluginsorter/composer.lock
+core/components/pluginsorter/composer.phar
+core/components/pluginsorter/vendor/
+config.core.php
+.idea
