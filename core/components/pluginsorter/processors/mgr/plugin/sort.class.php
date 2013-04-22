@@ -7,6 +7,14 @@ class SortPlugins extends modProcessor
     /** @var xPDOObject */
     public $object;
     public $method;
+    /** @var PluginSorter */
+    public $sorter;
+
+    public function initialize()
+    {
+        $this->sorter =& $this->modx->pluginsorter;
+        return parent::initialize();
+    }
 
     public function process()
     {
@@ -31,8 +39,7 @@ class SortPlugins extends modProcessor
         // Update the source rank to the targeted one
         $this->object->set($this->rankField, $this->getProperty($this->rankField));
         $this->object->save();
-
-        $this->modx->cacheManager->refresh();
+        $this->sorter->refreshCache();
 
         return $this->success('', $this->object);
     }

@@ -53,6 +53,8 @@ class PluginSorter
             'debug' => $this->modx->getOption("{$prefix}.debug", null, false),
             'debug_user' => null,
             'debug_user_id' => null,
+
+            'refresh_cache' => $this->modx->getOption('pluginsorter.refresh_cache', null, false),
         ), $config);
 
         $this->modx->lexicon->load('pluginsorter:default');
@@ -83,6 +85,14 @@ class PluginSorter
             $object->set('priority', $idx);
             $object->save();
             $idx += 1;
+        }
+    }
+
+    public function refreshCache()
+    {
+        $refresh = $this->modx->getOption('refresh_cache', $this->config);
+        if ($refresh) {
+            $this->modx->cacheManager->refresh();
         }
     }
 

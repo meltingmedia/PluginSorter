@@ -5,6 +5,14 @@ class ToggleStatus extends modProcessor
     public $classKey = 'modPlugin';
     /** @var modPlugin */
     public $object;
+    /** @var PluginSorter */
+    public $sorter;
+
+    public function initialize()
+    {
+        $this->sorter =& $this->modx->pluginsorter;
+        return parent::initialize();
+    }
 
     public function process()
     {
@@ -15,18 +23,9 @@ class ToggleStatus extends modProcessor
 
         $this->object->set('disabled', !($this->object->get('disabled')));
         $this->object->save();
-        $this->refreshCache();
+        $this->sorter->refreshCache();
 
         return $this->success('', $this->object);
-    }
-
-    public function refreshCache()
-    {
-        $refresh = $this->getProperty('refreshCache', false);
-        if ($refresh) {
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'been asked to refresh the cache');
-            $this->modx->cacheManager->refresh();
-        }
     }
 }
 

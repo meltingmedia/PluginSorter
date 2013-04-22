@@ -3,9 +3,6 @@
 class AutoSort extends modProcessor
 {
     public $classKey = 'modPluginEvent';
-    /** @var xPDOObject */
-    public $object;
-    public $method;
     /** @var PluginSorter */
     public $sorter;
 
@@ -30,7 +27,7 @@ class AutoSort extends modProcessor
             $this->sort($name);
         }
 
-        // @todo : refresh cache
+        $this->sorter->refreshCache();
 
         return $this->success();
     }

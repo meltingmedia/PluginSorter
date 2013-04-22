@@ -25,18 +25,9 @@ class RemoveEvent extends modProcessor
         $event->remove();
 
         $this->sorter->autoSort($this->getProperty('event'));
-
-        $this->modx->cacheManager->refresh();
+        $this->sorter->refreshCache();
 
         return $this->success();
-    }
-
-    public function refreshCache()
-    {
-        $refresh = $this->getProperty('refreshCache', false);
-        if ($refresh) {
-            $this->modx->cacheManager->refresh();
-        }
     }
 }
 
