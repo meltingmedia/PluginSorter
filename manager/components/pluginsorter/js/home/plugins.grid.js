@@ -275,13 +275,14 @@ PluginSorter.EventsCombo = function(config) {
         ,selectOnFocus: true
         ,displayField : 'name'
         ,valueField : 'name'
-        ,fields: ['name']
+        ,fields: ['name', 'total']
         ,triggerAction : 'all'
         ,lazyRender: true
         ,editable : true
         ,minChars: 1
         ,url: PluginSorter.config.connector_url
         ,listWidth: 300
+        ,tpl: '<tpl for="."><div class="x-combo-list-item">{name} ({total})</div></tpl>'
         ,baseParams: {
             action: 'event/getlist'
             ,combo: true

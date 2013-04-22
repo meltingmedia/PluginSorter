@@ -10,6 +10,12 @@ class ListEvents extends modObjectGetListProcessor
 
     public function prepareQueryBeforeCount(xPDOQuery $c)
     {
+        $c->leftJoin('modPluginEvent', 'PluginEvents');
+        $c->select(array(
+            $this->modx->getSelectColumns($this->classKey, $this->classKey),
+            'total' => 'COUNT(PluginEvents.pluginid)'
+        ));
+
         $query = $this->getProperty('query');
         if (!empty($query)) {
             $c->where(array(
@@ -20,10 +26,18 @@ class ListEvents extends modObjectGetListProcessor
         return $c;
     }
 
+    public function prepareQueryAfterCount(xPDOQuery $c)
+    {
+        $c->groupby($this->defaultSortField, $this->defaultSortDirection);
+
+        return $c;
+    }
+
     public function beforeIteration(array $list)
     {
         $list[] = array(
             'name' => $this->modx->lexicon('pluginsorter.all_events'),
+            'total' => 0,
         );
 
         return $list;
