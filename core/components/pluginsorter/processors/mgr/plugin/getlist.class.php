@@ -17,7 +17,7 @@ class ListPlugins extends modObjectGetListProcessor
         ));
 
         $event = $this->getProperty('event');
-        if (!empty($event)) {
+        if (!empty($event) && $event != $this->modx->lexicon('pluginsorter.all_events')) {
             $c->where(array(
                 'event' => $event,
             ));

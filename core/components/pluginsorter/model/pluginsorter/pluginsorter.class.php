@@ -2,13 +2,6 @@
 
 class PluginSorter
 {
-    /* For debugging purpose */
-    public $bench = array();
-    /**
-     * @access protected
-     * @var array $chunks A collection of preprocessed chunk values.
-     */
-    protected $chunks;
     /**
      * @access public
      * @var modX $modx A reference to the modX object.
@@ -44,15 +37,11 @@ class PluginSorter
             'assets_path' => $assetsPath,
             'model_path' => $basePath . 'model/',
             'processors_path' => $basePath . 'processors/',
-            'chunks_path' => $basePath . 'elements/chunks/',
-            'chunks_suffix' => '.chunk.html',
-            'add_package' => false,
 
             'migrations_path' => $basePath . 'migrations/',
 
             'use_autoloader' => false,
             'vendor_path' => $basePath . 'vendor/',
-            'use_rte' => false,
 
             'assets_url' => $assetsUrl,
             'js_url' => $assetsUrl . 'web/js/',
@@ -69,9 +58,13 @@ class PluginSorter
         $this->modx->lexicon->load('pluginsorter:default');
         if ($this->modx->getOption('debug', $this->config)) $this->initDebug();
         if ($this->config['use_autoloader']) require_once $this->config['vendor_path'] . 'autoload.php';
-        if ($this->config['add_package']) $this->modx->addPackage('pluginsorter', $this->config['model_path']);
     }
 
+    /**
+     * Automatically sort plugins, like MODX would execute per default, for the given event
+     *
+     * @param string $event The event name
+     */
     public function autoSort($event)
     {
         $c = $this->modx->newQuery('modPluginEvent');
@@ -89,9 +82,6 @@ class PluginSorter
         foreach ($collection as $object) {
             $object->set('priority', $idx);
             $object->save();
-//            /** @var modPlugin $plugin */
-//            $plugin = $object->getOne('Plugin');
-//            $this->modx->log(modX::LOG_LEVEL_INFO, $plugin->get('name'));
             $idx += 1;
         }
     }
@@ -112,100 +102,4 @@ class PluginSorter
 //            $this->modx->user = $user;
 //        }
     }
-
-    /**
-     * Gets a Chunk and caches it; also falls back to file-based templates
-     * for easier debugging.
-     *
-     * @author Shaun McCormick <shaun@modx.com>
-     * @access public
-     * @param string $name The name of the Chunk
-     * @param array $properties The properties for the Chunk
-     * @return string The processed content of the Chunk
-     */
-    public function getChunk($name, $properties = array())
-    {
-        $chunk = null;
-        if (!isset($this->chunks[$name])) {
-            $chunk = $this->_getTplChunk($name, $properties);
-            if (empty($chunk)) {
-                $chunk = $this->modx->getObject('modChunk', array('name' => $name));
-                if ($chunk == false) return false;
-            }
-            $this->chunks[$name] = $chunk->getContent();
-        } else {
-            $o = $this->chunks[$name];
-            $chunk = $this->modx->newObject('modChunk');
-            $chunk->setContent($o);
-        }
-        $chunk->setCacheable(false);
-
-        return $chunk->process($properties);
-    }
-
-    /**
-     * Returns a modChunk object from a template file.
-     *
-     * @author Shaun McCormick <shaun@modx.com>
-     * @access private
-     * @param string $name The name of the Chunk. Will parse to name.$postfix
-     * @param string $postfix The default postfix to search for chunks at.
-     * @return modChunk|boolean Returns the modChunk object if found, otherwise
-     * false.
-     */
-    private function _getTplChunk($name, array $properties = array())
-    {
-        $chunk = false;
-        $suffix = $this->modx->getOption('chunks_suffix', $properties, $this->config['chunks_suffix']);
-        $path = $this->modx->getOption('chunks_path', $properties, $this->config['chunks_path']);
-        $f = $path . strtolower($name) . $suffix;
-        if (file_exists($f)) {
-            $o = file_get_contents($f);
-            /** @var $chunk modChunk */
-            $chunk = $this->modx->newObject('modChunk');
-            $chunk->set('name', $name);
-            $chunk->setContent($o);
-        }
-
-        return $chunk;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMicrotime()
-    {
-        $mtime = microtime();
-        $mtime = explode(' ', $mtime);
-        $mtime = $mtime[1] + $mtime[0];
-
-        return $mtime;
-    }
-
-    /**
-     * Starts a bench timer
-     *
-     * @param string $name The bench name
-     */
-    public function startBench($name)
-    {
-        $this->bench[$name] = $this->getMicrotime();
-    }
-
-    /**
-     * Stops the given bench
-     *
-     * @param string $name The bench name
-     * @return string The bench result
-     */
-    public function endBench($name)
-    {
-        $tend = $this->getMicrotime();
-        $totalTime = ($tend - $this->bench[$name]);
-        $result = sprintf("Exec time for %s * %2.4f s", $name, $totalTime);
-        $result .= " - Peak memory usage: " . (memory_get_peak_usage(true) / 1024 / 1024) . " MB\n";
-
-        return $result;
-    }
-
 }

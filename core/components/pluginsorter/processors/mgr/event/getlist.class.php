@@ -19,6 +19,15 @@ class ListEvents extends modObjectGetListProcessor
 
         return $c;
     }
+
+    public function beforeIteration(array $list)
+    {
+        $list[] = array(
+            'name' => $this->modx->lexicon('pluginsorter.all_events'),
+        );
+
+        return $list;
+    }
 }
 
 return 'ListEvents';

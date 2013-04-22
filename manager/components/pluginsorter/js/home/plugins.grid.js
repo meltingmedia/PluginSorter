@@ -1,11 +1,11 @@
-Ext.ns('PluginSorter.grid');
+Ext.ns('PluginSorter');
 /**
- * @class PluginSorter.grid.CmpItem
+ * @class PluginSorter.PluginsGrid
  * @extends MODx.grid.Grid
  * @param config
  * @xtype pluginsorter-grid-plugins
  */
-PluginSorter.grid.CmpItem = function(config) {
+PluginSorter.PluginsGrid = function(config) {
     config = config || {};
 
     Ext.applyIf(config, {
@@ -64,6 +64,7 @@ PluginSorter.grid.CmpItem = function(config) {
 
         ,tbar: [{
             xtype: 'pluginsorter-combo-events'
+            ,value: _('pluginsorter.all_events')
             ,id: 'event-filter'
             ,listeners: {
                 select: {
@@ -85,7 +86,7 @@ PluginSorter.grid.CmpItem = function(config) {
                             url: this.config.url
                             ,params: {
                                 action: 'plugin/autosort'
-                                ,event: event
+                                ,event: (event != _('pluginsorter.all_events')) ? event : ''
                             }
                             ,listeners: {
                                 success: {
@@ -163,12 +164,12 @@ PluginSorter.grid.CmpItem = function(config) {
         });
     }
 
-    PluginSorter.grid.CmpItem.superclass.constructor.call(this, config);
+    PluginSorter.PluginsGrid.superclass.constructor.call(this, config);
     this.addEvents('sort');
     this.on('sort', this.onSort, this);
 };
 
-Ext.extend(PluginSorter.grid.CmpItem, MODx.grid.Grid, {
+Ext.extend(PluginSorter.PluginsGrid, MODx.grid.Grid, {
 
     onSort: function(o) {
         MODx.Ajax.request({
@@ -261,7 +262,7 @@ Ext.extend(PluginSorter.grid.CmpItem, MODx.grid.Grid, {
         }
     }
 });
-Ext.reg('pluginsorter-grid-plugins', PluginSorter.grid.CmpItem);
+Ext.reg('pluginsorter-grid-plugins', PluginSorter.PluginsGrid);
 
 PluginSorter.EventsCombo = function(config) {
     config = config || {};

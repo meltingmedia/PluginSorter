@@ -1,11 +1,11 @@
-Ext.ns('PluginSorter.panel');
+Ext.ns('PluginSorter');
 /**
- * @class PluginSorter.panel.Home
+ * @class PluginSorter.panelHome
  * @extends MODx.Panel
  * @param {Object} config
  * @xtype pluginsorter-panel-home
  */
-PluginSorter.panel.Home = function(config) {
+PluginSorter.panelHome = function(config) {
     config = config || {};
 
     Ext.apply(config, {
@@ -29,7 +29,7 @@ PluginSorter.panel.Home = function(config) {
             }]
         }]
     });
-    PluginSorter.panel.Home.superclass.constructor.call(this, config);
+    PluginSorter.panelHome.superclass.constructor.call(this, config);
 };
-Ext.extend(PluginSorter.panel.Home, MODx.Panel);
-Ext.reg('pluginsorter-panel-home', PluginSorter.panel.Home);
+Ext.extend(PluginSorter.panelHome, MODx.Panel);
+Ext.reg('pluginsorter-panel-home', PluginSorter.panelHome);
