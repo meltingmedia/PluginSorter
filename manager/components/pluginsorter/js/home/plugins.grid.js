@@ -3,7 +3,7 @@ Ext.ns('PluginSorter.grid');
  * @class PluginSorter.grid.CmpItem
  * @extends MODx.grid.Grid
  * @param config
- * @xtype pluginsorter-grid-cmpitem
+ * @xtype pluginsorter-grid-plugins
  */
 PluginSorter.grid.CmpItem = function(config) {
     config = config || {};
@@ -12,7 +12,7 @@ PluginSorter.grid.CmpItem = function(config) {
         id: 'pluginsorter-grid-cmpitem'
         ,url: PluginSorter.config.connector_url
         ,baseParams: {
-            action: 'mgr/plugin/getList'
+            action: 'plugin/getList'
         }
         ,fields: ['pluginid', 'event', 'priority', 'plugin_name', 'plugin_disabled']
         ,paging: true
@@ -20,8 +20,11 @@ PluginSorter.grid.CmpItem = function(config) {
         ,remoteSort: true
         ,anchor: '100%'
 
-        ,singleText: _('linkwall.link')
-        ,pluralText: _('linkwall.links')
+        ,ddGroup: 'plugins'
+        ,enableDragDrop: true
+
+        ,singleText: _('plugin')
+        ,pluralText: _('plugins')
 
         ,grouping: true
         ,groupBy: 'event'
@@ -60,6 +63,49 @@ PluginSorter.grid.CmpItem = function(config) {
                 }
             }
         }]
+
+
+        ,listeners: {
+            render: {
+                scope: this
+                ,fn: function(grid) {
+                    this.dropTarget = new Ext.dd.DropTarget(grid.getView().mainBody, {
+                        ddGroup: 'plugins'
+                        ,copy: false
+                        ,notifyOver: function(dragSource, e, data) {
+                            if (dragSource.getDragData(e)) {
+                                var targetNode = dragSource.getDragData(e).selections[0]
+                                    ,sourceNode = data.selections[0];
+
+                                if (sourceNode.data.event != targetNode.data.event) {
+                                    return this.dropNotAllowed;
+                                }
+                            }
+
+                            return this.dropAllowed;
+                        }
+                        ,notifyDrop: function(dragSource, e, data) {
+                            var sm = grid.getSelectionModel()
+                                ,rows = sm.getSelections();
+
+                            if (dragSource.getDragData(e)) {
+                                var targetNode = dragSource.getDragData(e).selections[0]
+                                    ,sourceNode = data.selections[0];
+
+                                if ((targetNode.id != sourceNode.id) && (targetNode.data.category === sourceNode.data.category)) {
+                                    grid.fireEvent('sort', {
+                                        target: targetNode
+                                        ,source: sourceNode
+                                        ,event: e
+                                        ,dragZone: dragSource
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
     });
 
     if (config.grouping) {
@@ -80,19 +126,37 @@ PluginSorter.grid.CmpItem = function(config) {
         });
     }
 
-    PluginSorter.grid.CmpItem.superclass.constructor.call(this, config)
+    PluginSorter.grid.CmpItem.superclass.constructor.call(this, config);
+    this.addEvents('sort');
+    this.on('sort', this.onSort, this);
 };
 
 Ext.extend(PluginSorter.grid.CmpItem, MODx.grid.Grid, {
-    // Search function
-    search: function(tf, nv, ov) {
-        var s = this.getStore();
-        s.baseParams.query = tf.getValue();
-        this.getBottomToolbar().changePage(1);
-        this.refresh();
+
+    onSort: function(o) {
+        console.log(o);
+
+
+        MODx.Ajax.request({
+            url: this.config.url
+            ,params: {
+                action: 'plugin/sort'
+                ,pluginid: o.source.data.pluginid
+                ,event: o.source.data.event
+                ,priority: o.target.data.priority
+            }
+            ,listeners: {
+                success: {
+                    fn: function(r) {
+                        this.refresh();
+                    }
+                    ,scope: this
+                }
+            }
+        });
     }
 });
-Ext.reg('pluginsorter-grid-cmpitem', PluginSorter.grid.CmpItem);
+Ext.reg('pluginsorter-grid-plugins', PluginSorter.grid.CmpItem);
 
 PluginSorter.EventsCombo = function(config) {
     config = config || {};
@@ -113,7 +177,7 @@ PluginSorter.EventsCombo = function(config) {
         ,url: PluginSorter.config.connector_url
         ,listWidth: 300
         ,baseParams: {
-            action: 'mgr/event/getlist'
+            action: 'event/getlist'
             ,combo: true
         }
     });

@@ -10,7 +10,8 @@ $modx->pluginsorter = new PluginSorter($modx);
 
 // handle request
 $path = $modx->getOption('processors_path', $modx->pluginsorter->config, $corePath . 'processors/');
+$location = $modx->context->get('key') == 'mgr' ? 'mgr' : '';
 $modx->request->handleRequest(array(
     'processors_path' => $path,
-    'location' => '',
+    'location' => $location,
 ));

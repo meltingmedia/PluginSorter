@@ -15,7 +15,6 @@ abstract class PluginSorterManagerController extends modManagerController
         $this->jsURL = $this->pluginsorter->config['mgr_js_url'];
         $this->cssURL = $this->pluginsorter->config['mgr_css_url'];
         $this->loadBase();
-        $this->loadRTE();
         parent::initialize();
     }
 
@@ -35,21 +34,6 @@ abstract class PluginSorterManagerController extends modManagerController
     });
 </script>'
         );
-    }
-
-    /**
-     * Load RTE if enabled
-     */
-    public function loadRTE()
-    {
-        if ($this->pluginsorter->config['use_rte']) {
-            new meltingmedia\rte\Loader(
-                $this->modx,
-                array(
-                    'namespace' => $this->pluginsorter->prefix,
-                )
-            );
-        }
     }
 
     /**

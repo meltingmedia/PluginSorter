@@ -52,7 +52,7 @@ Ext.extend(PluginSorter.panel.Home, MODx.Panel, {
                 ,border: false
                 ,bodyCssClass: 'panel-desc'
             },{
-                xtype: 'pluginsorter-grid-cmpitem'
+                xtype: 'pluginsorter-grid-plugins'
                 ,cls: 'main-wrapper'
                 ,preventRender: true
             }]

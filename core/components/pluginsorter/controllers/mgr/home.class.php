@@ -10,7 +10,7 @@ class PluginSorterMgrHomeManagerController extends PluginSorterManagerController
 
     public function loadCustomCssJs()
     {
-        $this->addJavascript($this->jsURL . 'home/cmpitem.grid.js');
+        $this->addJavascript($this->jsURL . 'home/plugins.grid.js');
         $this->addJavascript($this->jsURL . 'home/home.panel.js');
 
         $this->addHtml('<script type="text/javascript">

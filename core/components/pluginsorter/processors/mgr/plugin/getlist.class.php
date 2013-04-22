@@ -45,6 +45,7 @@ class ListPlugins extends modObjectGetListProcessor
 
         $c->sortby('event', 'ASC');
         $c->sortby('priority', 'ASC');
+        $c->sortby('Plugin.name', 'ASC');
         //$c->sortby($sortKey,$this->getProperty('dir'));
 
         if ($limit > 0) {
