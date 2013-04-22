@@ -109,18 +109,13 @@ PluginSorter.PluginsGrid = function(config) {
                 ,fn: function(grid) {
                     this.dropTarget = new Ext.dd.DropTarget(grid.getView().mainBody, {
                         ddGroup: 'plugins'
-                        ,grid: this
                         ,copy: false
                         ,notifyOver: function(dragSource, e, data) {
                             if (dragSource.getDragData(e)) {
                                 var targetNode = dragSource.getDragData(e).selections[0]
-                                    ,sourceNode = data.selections[0]
-                                    ,t = Ext.lib.Event.getTarget(e)
-                                    ,rindex = this.grid.getView().findRowIndex(t);
+                                    ,sourceNode = data.selections[0];
 
-                                if (rindex == data.rowIndex) rindex = false;
-
-                                if ((sourceNode.data.event != targetNode.data.event) || rindex === false || rindex < 0) {
+                                if ((sourceNode.data.event != targetNode.data.event) || sourceNode.id == targetNode.id) {
                                     return this.dropNotAllowed;
                                 }
 
