@@ -4,15 +4,20 @@ if ($object->xpdo) {
 
     /** @var $modx modX */
     $modx =& $object->xpdo;
+    $modx->lexicon->load('pluginsorter:setup');
+
+    $modx->setOption('cultureKey', $modx->getOption('manager_language'));
+
+    $prefix = 'pluginsorter.setup_';
 
     if ($options['auto_sort']) {
-        $modx->log(modX::LOG_LEVEL_INFO, 'Automatic sorting of existing plugins events in progress…');
+        $modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon("{$prefix}sorting_start"));
         $rootPath = $modx->getOption('pluginsorter.core_path', null, $modx->getOption('core_path') . 'components/pluginsorter/');
         $modelPath = $rootPath . 'model/pluginsorter/';
         /** @var $service PluginSorter */
         $service = $modx->getService('PluginSorter', 'pluginsorter', $modelPath);
         if (!$service || !($service instanceof PluginSorter)) {
-            $modx->log(modX::LOG_LEVEL_ERROR, 'Problem with service class');
+            $modx->log(modX::LOG_LEVEL_ERROR, $modx->lexicon("{$prefix}service_error"));
         } else {
             $events = $modx->getCollection('modEvent');
             /** @var modEvent $event */
@@ -22,12 +27,12 @@ if ($object->xpdo) {
                 $service->autoSort($name);
             }
 
-            $modx->log(modX::LOG_LEVEL_INFO, 'Sorting done.');
+            $modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon("{$prefix}sorting_done"));
         }
     }
 
     if ($options['auto_refresh']) {
-        $modx->log(modX::LOG_LEVEL_INFO, 'Activating automatic cache refresh…');
+        $modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon("{$prefix}autocache_start"));
 
         /** @var modSystemSetting $setting */
         $setting = $modx->getObject('modSystemSetting', 'pluginsorter.refresh_cache');
@@ -43,6 +48,9 @@ if ($object->xpdo) {
         $setting->set('value', '1');
         $setting->save();
 
-        $modx->log(modX::LOG_LEVEL_INFO, 'Activation done.');
+        // temporary fix
+        $modx->setOption('cultureKey', $modx->getOption('manager_language'));
+
+        $modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon("{$prefix}autocache_done"));
     }
 }

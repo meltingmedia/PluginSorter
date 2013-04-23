@@ -2,31 +2,61 @@
 /**
  * Build the setup options form.
  *
+ * @var modX $modx
+ * @var array $options
+ *
  * @package pluginsorter
  * @subpackage build
  */
-// set some default values
+
+if (!function_exists('loadSetupStrings')) {
+    /**
+     * @param modX $modx
+     * @param array $options
+     *
+     * @return array
+     */
+    function loadSetupStrings($modx, $options)
+    {
+        $path = $modx->getOption('core_path') . 'packages/' . $options['signature'] .'/';
+        $lang = $modx->getOption('manager_language', null, $modx->getOption('cultureKey', null, 'en'));
+        $file = 'setup.inc.php';
+
+        $search = $options['package_name'] . '/lexicon';
+        $length = strlen($search);
+        $lexicon = false;
+
+        $directories = new RecursiveIteratorIterator(
+            new ParentIterator(new RecursiveDirectoryIterator($path)),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+        // Search for the lexicon folder
+        foreach ($directories as $directory) {
+            if (substr($directory, - $length) == $search) {
+                $lexicon = $directory;
+                break;
+            }
+        }
+        if (!file_exists($lexicon . '/' . $lang)) {
+            // Fallback to english
+            $lang = 'en';
+        }
+        $load = $lexicon . '/' . $lang . '/' . $file;
+
+        /** @var $_lang array */
+        include_once($load);
+
+        return $_lang;
+    }
+}
+// Load lexicons
+$lexicon = loadSetupStrings($modx, $options);
 
 // Build the setup form
 $output = array(
-    'intro' => '
-<h2>PluginSorter Installer</h2>
-<p>Thanks for installing PluginSorter!<br />There are several options you might consider before going on : </p><br />
-<p>
-    <ol>
-        <li>- Automatically sort events is <b>required for PluginSorter to work</b> properly. You can safely skip this right now since you will be able to do it later from the CMP.</li>
-        <li>- Automatically refresh MODX cache refreshes the cache when needed. If you know what you are doing, you can safely skip this, and manually clear the cache when you need to. If you enable this option, you can disable it later in the system settings.</li>
-    </ol>
-</p><br />',
-
-    'auto_sort' => '
-<label for="auto_sort">
-<input type="checkbox" name="auto_sort" id="auto_sort" value="true" />&nbsp;Automatically sort existing events</label>',
-
-    'auto_refresh' => '
-<label for="auto_refresh">
-<input type="checkbox" name="auto_refresh" id="auto_refresh" value="true" />&nbsp;Automatically refresh MODX cache when needed</label>',
-
+    'intro' => $lexicon['pluginsorter.o_intro'],
+    'auto_sort' => $lexicon['pluginsorter.o_auto_sort'],
+    'auto_refresh' => $lexicon['pluginsorter.o_auto_refresh'],
     'end' => '<br /><br />'
 );
 
