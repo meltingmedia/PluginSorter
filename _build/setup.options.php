@@ -14,7 +14,7 @@ $output = array(
 <p>Thanks for installing PluginSorter!<br />There are several options you might consider before going on : </p><br />
 <p>
     <ol>
-        <li>- Automatically sort events is <b>required for PluginSorter to work</b> properly. You can safely skip this right now since you will be able to do it later on the CMP.</li>
+        <li>- Automatically sort events is <b>required for PluginSorter to work</b> properly. You can safely skip this right now since you will be able to do it later from the CMP.</li>
         <li>- Automatically refresh MODX cache refreshes the cache when needed. If you know what you are doing, you can safely skip this, and manually clear the cache when you need to. If you enable this option, you can disable it later in the system settings.</li>
     </ol>
 </p><br />',
