@@ -24,7 +24,7 @@ class AutoSort extends modProcessor
 
         foreach ($events as $name) {
             if ($name == '') continue;
-            $this->sort($name);
+            $this->sorter->autoSort($name);
         }
 
         $this->sorter->refreshCache();
@@ -32,11 +32,11 @@ class AutoSort extends modProcessor
         return $this->success();
     }
 
-    public function sort($event)
-    {
-        $this->sorter->autoSort($event);
-    }
-
+    /**
+     * Get the whole modEvent names list
+     *
+     * @return array The events names
+     */
     public function getEvents()
     {
         $output = array();

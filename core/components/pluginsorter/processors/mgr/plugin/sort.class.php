@@ -19,7 +19,7 @@ class SortPlugins extends modProcessor
     public function process()
     {
         if (!$this->getObject()) {
-            return $this->failure($this->modx->lexicon('linkwall.link_err_nf'));
+            return $this->failure($this->modx->lexicon('pluginsorter.plugin_err_nf'));
         }
         // Target the impacted links if any
         $c = $this->modx->newQuery($this->classKey);
@@ -50,6 +50,10 @@ class SortPlugins extends modProcessor
      */
     public function getObject()
     {
+        $eventName = $this->getProperty('event');
+        $id = $this->getProperty('pluginid');
+        if (!$eventName || !$id) return false;
+
         $this->object = $this->modx->getObject($this->classKey, array(
             'pluginid' => $this->getProperty('pluginid'),
             'event' => $this->getProperty('event'),

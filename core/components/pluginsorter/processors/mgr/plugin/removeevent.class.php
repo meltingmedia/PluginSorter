@@ -15,16 +15,22 @@ class RemoveEvent extends modProcessor
     public function process()
     {
         //$this->modx->log(modX::LOG_LEVEL_INFO, print_r($this->getProperties(), true));
+        $eventName = $this->getProperty('event');
+        $id = $this->getProperty('pluginid');
+        if (!$eventName || !$id) return $this->failure();
+
         /** @var modPluginEvent $event */
         $event = $this->modx->getObject($this->classKey, array(
-            'event' => $this->getProperty('event'),
-            'pluginid' => $this->getProperty('pluginid'),
+            'event' => $eventName,
+            'pluginid' => $id,
         ));
         if (!$event) return $this->failure();
 
-        $event->remove();
+        if (true !== $event->remove()) {
+            return $this->failure('Error while removing the modPluginEvent');
+        }
 
-        $this->sorter->autoSort($this->getProperty('event'));
+        $this->sorter->autoSort($eventName);
         $this->sorter->refreshCache();
 
         return $this->success();
