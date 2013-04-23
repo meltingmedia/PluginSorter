@@ -30,5 +30,5 @@ If you know what you are doing, you can safely skip it, and manully clear the ca
 
 ## License
 
-PluginSorter is lisenced under the MIT lisence.
+PluginSorter is licensed under the MIT license.
 Copyright 2013 Melting Media <https://github.com/meltingmedia>
