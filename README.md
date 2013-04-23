@@ -7,9 +7,9 @@ PluginSorter is a Custom Manager Page allowing you to define the execution order
 * PHP >= 5.3
 * MODX Revolution 2.2+
 
-## Installation & notes
+## Installation
 
-Install from the Package Manager.
+Download & install from the Package Manager.
 
 During setup, you will be offered to :
 
@@ -27,6 +27,10 @@ When manipulating the modPlugin objects (and related), MODX needs to refresh its
 Activate this option to do it automatically after each action that requires it.
 
 If you know what you are doing, you can safely skip it, and manully clear the cache when you are satisfied with your configuration.
+
+## Notes
+
+Users must have the `save_plugin` right/flag to see the CMP menu.
 
 ## License
 
