@@ -15,3 +15,6 @@ $_lang['pluginsorter.plugin_priority'] = 'Rank';
 $_lang['pluginsorter.remove_event'] = 'Remove event';
 $_lang['pluginsorter.sort'] = 'Sort : [[+name]]';
 $_lang['pluginsorter.toggle_status'] = 'Toggle status';
+
+$_lang['setting_pluginsorter.refresh_cache'] = 'Refresh cache';
+$_lang['setting_pluginsorter.refresh_cache_desc'] = 'Enable this option to automatically refresh MODX cache when required by an action to be effactive. If this option is disabled, you will have to manually clear the cache to reflect changes.';
