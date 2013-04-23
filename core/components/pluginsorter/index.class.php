@@ -54,7 +54,7 @@ abstract class PluginSorterManagerController extends modManagerController
 
     public function checkPermissions()
     {
-        return true;
+        return $this->modx->hasPermission('save_plugin');
     }
 
     public function getTemplateFile()
