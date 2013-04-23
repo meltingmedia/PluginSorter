@@ -13,7 +13,7 @@ class ListPlugins extends modObjectGetListProcessor
         $c->rightJoin('modPlugin', 'Plugin');
         $c->select(array(
             $this->modx->getSelectColumns($this->classKey, $this->classKey),
-            $this->modx->getSelectColumns('modPlugin', 'Plugin', 'plugin_', array('name', 'disabled')),
+            $this->modx->getSelectColumns('modPlugin', 'Plugin', 'plugin_', array('name', 'disabled', 'description')),
         ));
 
         $event = $this->getProperty('event');

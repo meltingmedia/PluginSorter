@@ -7,6 +7,11 @@ Ext.ns('PluginSorter');
  */
 PluginSorter.PluginsGrid = function(config) {
     config = config || {};
+    this.pluginTpl = new Ext.XTemplate(
+        '<div><ul><li>{plugin_name}'
+        ,'<tpl if="plugin_description"> - <i><small>{plugin_description}</small></i></tpl>'
+        ,'</li></ul></div>'
+    );
 
     Ext.applyIf(config, {
         id: 'pluginsorter-grid-cmpitem'
@@ -14,7 +19,7 @@ PluginSorter.PluginsGrid = function(config) {
         ,baseParams: {
             action: 'plugin/getList'
         }
-        ,fields: ['pluginid', 'event', 'priority', 'plugin_name', 'plugin_disabled']
+        ,fields: ['pluginid', 'event', 'priority', 'plugin_name', 'plugin_disabled', 'plugin_description']
         ,paging: true
         ,autosave: true
         ,remoteSort: true
@@ -49,6 +54,10 @@ PluginSorter.PluginsGrid = function(config) {
             header: _('plugin')
             ,dataIndex: 'plugin_name'
             ,sortable: false
+            ,renderer: function(value, meta, record) {
+                return this.pluginTpl.apply(record.data);
+            }
+            ,scope: this
         },{
             header: _('event')
             ,dataIndex: 'event'
