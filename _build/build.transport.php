@@ -12,7 +12,7 @@ set_time_limit(0);
 // define package names
 define('PKG_NAME', 'PluginSorter');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '0.1.0');
+define('PKG_VERSION', '0.1.1');
 define('PKG_RELEASE', 'beta');
 
 // Define build paths
@@ -35,12 +35,15 @@ unset($root);
 // Override with your own defines here (see build.config.sample.php)
 require_once $sources['build'] . 'build.config.php';
 require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
-//require_once $sources['build'] . '/includes/helper.php';
+require_once $sources['build'] . '/includes/helper.php';
 
 // Instantiate modX
 $modx = new modX();
 $modx->initialize('mgr');
-echo '<pre>'; // used for nice formatting of log messages
+if (!XPDO_CLI_MODE) {
+    // used for nice formatting of log messages
+    echo '<pre>';
+}
 $modx->setLogLevel(modX::LOG_LEVEL_INFO);
 $modx->setLogTarget('ECHO');
 
@@ -66,6 +69,32 @@ if (!is_array($settings)) {
     $modx->log(modX::LOG_LEVEL_INFO, 'Packaged in '.count($settings).' System Settings.');
 }
 unset($settings, $setting, $attributes);
+
+// add plugins
+$plugins = include $sources['data'].'transport.plugins.php';
+if (!is_array($plugins)) {
+    $modx->log(modX::LOG_LEVEL_FATAL, 'Adding plugins failed.');
+}
+$attributes = array(
+    xPDOTransport::UNIQUE_KEY => 'name',
+    xPDOTransport::PRESERVE_KEYS => false,
+    xPDOTransport::UPDATE_OBJECT => true,
+    xPDOTransport::RELATED_OBJECTS => true,
+    xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array (
+        'PluginEvents' => array(
+            xPDOTransport::PRESERVE_KEYS => true,
+            xPDOTransport::UPDATE_OBJECT => false,
+            xPDOTransport::UNIQUE_KEY => array('pluginid', 'event'),
+        ),
+    ),
+);
+foreach ($plugins as $plugin) {
+    $vehicle = $builder->createVehicle($plugin, $attributes);
+    $builder->putVehicle($vehicle);
+}
+$modx->log(modX::LOG_LEVEL_INFO, 'Packaged in '.count($plugins).' plugins.');
+flush();
+unset($plugins, $plugin, $attributes);
 
 // Load menu
 $modx->log(modX::LOG_LEVEL_INFO, 'Packaging in menu...');
@@ -117,5 +146,5 @@ $builder->pack();
 $tend = explode(' ', microtime());
 $tend = $tend[1] + $tend[0];
 $totalTime = sprintf("%2.4f s", ($tend - $tstart));
-$modx->log(modX::LOG_LEVEL_INFO, "\n<br />Package Built.<br />\nExecution time: {$totalTime}\n");
+$modx->log(modX::LOG_LEVEL_INFO, "\n\nPackage Built. \nExecution time: {$totalTime}\n");
 exit ();

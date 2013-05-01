@@ -54,9 +54,9 @@ PluginSorter.PluginsGrid = function(config) {
             header: _('plugin')
             ,dataIndex: 'plugin_name'
             ,sortable: false
-            ,renderer: function(value, meta, record) {
-                return this.pluginTpl.apply(record.data);
-            }
+//            ,renderer: function(value, meta, record) {
+//                return this.pluginTpl.apply(record.data);
+//            }
             ,scope: this
         },{
             header: _('event')

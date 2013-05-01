@@ -22,7 +22,7 @@ if (!function_exists('loadSetupStrings')) {
         $lang = $modx->getOption('manager_language', null, $modx->getOption('cultureKey', null, 'en'));
         $file = 'setup.inc.php';
 
-        $search = $options['package_name'] . '/lexicon';
+        $search = strtolower(str_replace(' ', '', $options['package_name'])) . '/lexicon';
         $length = strlen($search);
         $lexicon = false;
 
@@ -50,13 +50,14 @@ if (!function_exists('loadSetupStrings')) {
     }
 }
 // Load lexicons
-$lexicon = loadSetupStrings($modx, $options);
+/** @var array $_lang */
+$lexicons = loadSetupStrings($modx, $options);
 
 // Build the setup form
 $output = array(
-    'intro' => $lexicon['pluginsorter.o_intro'],
-    'auto_sort' => $lexicon['pluginsorter.o_auto_sort'],
-    'auto_refresh' => $lexicon['pluginsorter.o_auto_refresh'],
+    'intro' => $lexicons['pluginsorter.o_intro'],
+    'auto_sort' => $lexicons['pluginsorter.o_auto_sort'],
+    'auto_refresh' => $lexicons['pluginsorter.o_auto_refresh'],
     'end' => '<br /><br />'
 );
 

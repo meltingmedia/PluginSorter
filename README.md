@@ -1,6 +1,6 @@
 # Plugin Sorter
 
-PluginSorter is a Custom Manager Page allowing you to define the execution order of your plugins, per event.
+Plugin Sorter is a Custom Manager Page allowing you to define the execution order of your plugins, per event.
 
 ## Requirements
 
@@ -18,7 +18,7 @@ During setup, you will be offered to :
 This is a required action to make Plugin Sorter work.You can skip it during the setup and perform this action from the CMP later on.
 What it does is assign & increments a `priority` value to each `modPluginEvent` object.
 
-In the CMP, you will find a button which allows you to perform this action at will (most likely after each plugin creation/creation since MODX creates all plugins with a priority of `0`, messing up the whole priority role).
+In the CMP, you will find a button which allows you to perform this action at will.
 If you click the button when "All events" if set in the near combo box, the sorting will be done for all system events. If you filter to a particular system event, the sorting will only be done for that event.
 
 ### Automatically refresh cache
@@ -34,5 +34,5 @@ Users must have the `save_plugin` right/flag to see the CMP menu.
 
 ## License
 
-PluginSorter is licensed under the MIT license.
-Copyright 2013 Melting Media <https://github.com/meltingmedia>
+Plugin Sorter is licensed under the MIT license.
+Copyright 2013 Melting Media <https://github.com/meltingmedia/PluginSorter>
